@@ -19,25 +19,43 @@ def reset_world():
     global running
     global grass
     global team
+    global balls
+    global world
+    world = []
     grass = Grass()
-    team =[Boy() for i in range(11)]
+    balls = [Ball() for i in range(20)]
+    team = [Boy() for i in range(11)]
+    world.append(grass)
+    world += team
+    world += balls
     running = True
 
 
 def render_world():
     clear_canvas()
-    grass.draw()
-    for boy in team:
-        boy.draw()
+    for object in world:
+        object.draw()
     update_canvas()
 
 
 def update_world():
-    grass.update()
-    for boy in team:
-        boy.update()
+    for object in world:
+        object.update()
 
+class Ball:
+    def __init__(self):
+        self.img = load_image('ball21x21.png') if random.randint(0,1) else load_image('ball41x41.png')
+        self.x, self.y = random.randint(0, 800), 599
 
+    def draw(self):
+        self.img.draw(self.x,self.y)
+
+    def update(self):
+        if(self.y <= self.img.h // 2 + 50):
+            self.y = 50 + self.img.h // 2
+            pass
+        else:
+            self.y -= random.randint(2,10)
 class Grass:
     def __init__(self):
         self.img = load_image('grass.png')
@@ -51,8 +69,8 @@ class Grass:
 
 class Boy:
     def __init__(self):
-        self.x, self.y = random.randint(100,700), 90
-        self.frame = random.randint(0,7)
+        self.x, self.y = random.randint(100, 700), 90
+        self.frame = random.randint(0, 7)
         self.img = load_image('run_animation.png')
 
     def update(self):
